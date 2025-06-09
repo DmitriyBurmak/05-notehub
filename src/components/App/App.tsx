@@ -1,35 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import { useDebounce } from 'use-debounce';
+import { Toaster } from 'react-hot-toast';
 
-function App() {
-  const [count, setCount] = useState(0)
+import NoteList from '../NoteList/NoteList';
+import PaginationWrapper from '../Pagination/PaginationWrapper';
+import SearchBox from '../SearchBox/SearchBox';
+import NoteModal from '../NoteModal/NoteModal';
+
+export default function App() {
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [debouncedSearch] = useDebounce(search, 300);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleSearch = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div>
+      <Toaster position="top-right" />
 
-export default App
+      <button className="createButton" onClick={() => setIsModalOpen(true)}>
+        Create note +
+      </button>
+
+      <SearchBox value={search} onChange={setSearch} onSearch={handleSearch} />
+      <NoteList page={page} search={debouncedSearch} />
+      <PaginationWrapper page={page} search={search} onPageChange={setPage} />
+
+      {isModalOpen && <NoteModal onClose={() => setIsModalOpen(false)} />}
+    </div>
+  );
+}

@@ -10,14 +10,13 @@ const getAuthHeaders = () => ({
 
 export const fetchNotes = async (
   page: number,
-  limit: number,
   search: string
 ): Promise<NotesResponse> => {
-  if (page < 1 || limit < 1) {
-    throw new Error('Page and limit must be 1 or greater');
+  if (page < 1) {
+    throw new Error('Page must be 1 or greater');
   }
 
-  const params: Record<string, string | number> = { page, limit };
+  const params: Record<string, string | number> = { page };
   if (search.trim() !== '') {
     params.search = search.trim();
   }
@@ -34,6 +33,18 @@ export const createNote = async (payload: CreateNotePayload): Promise<Note> => {
   const { data } = await axios.post<Note>(`${BASE_URL}/notes`, payload, {
     headers: getAuthHeaders(),
   });
+  return data;
+};
+
+export const updateNote = async (payload: Note): Promise<Note> => {
+  const { id, ...updateData } = payload;
+  const { data } = await axios.put<Note>(
+    `${BASE_URL}/notes/${id}`,
+    updateData,
+    {
+      headers: getAuthHeaders(),
+    }
+  );
   return data;
 };
 

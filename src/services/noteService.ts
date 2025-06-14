@@ -20,7 +20,7 @@ export const fetchNotes = async (
   if (search.trim() !== '') {
     params.search = search.trim();
   }
-
+  params.perPage = 12;
   const { data } = await axios.get<NotesResponse>(`${BASE_URL}/notes`, {
     params,
     headers: getAuthHeaders(),

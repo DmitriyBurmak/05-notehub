@@ -17,7 +17,8 @@ export const useNotes = ({ page, search }: UseNotesParams) => {
     queryFn: () => fetchNotes(page, search),
     staleTime: 1000 * 60,
     retry: 1,
-    placeholderData: () => {
+    placeholderData: previousData => {
+      void previousData;
       if (page > 1) {
         return queryClientInstance.getQueryData<NotesResponse>([
           'notes',

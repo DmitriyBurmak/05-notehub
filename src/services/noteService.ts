@@ -48,10 +48,9 @@ export const updateNote = async (payload: Note): Promise<Note> => {
   return data;
 };
 
-export const deleteNote = async (id: string): Promise<{ message: string }> => {
-  const { data } = await axios.delete<{ message: string }>(
-    `${BASE_URL}/notes/${id}`,
-    { headers: getAuthHeaders() }
-  );
+export const deleteNote = async (id: number): Promise<Note> => {
+  const { data } = await axios.delete<Note>(`${BASE_URL}/notes/${id}`, {
+    headers: getAuthHeaders(),
+  });
   return data;
 };

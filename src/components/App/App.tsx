@@ -3,14 +3,13 @@ import { useDebounce } from 'use-debounce';
 import { Toaster } from 'react-hot-toast';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient, useNotes } from '../../hooks/useNotes';
-
 import NoteList from '../NoteList/NoteList';
 import Pagination from '../Pagination/Pagination';
 import SearchBox from '../SearchBox/SearchBox';
 import NoteModal from '../NoteModal/NoteModal';
-
 import css from './App.module.css';
-import type { Note } from '../../types/note';
+import Loader from '../Loader/Loader';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
 export default function App() {
   const [page, setPage] = useState(1);
@@ -18,24 +17,19 @@ export default function App() {
   const [debouncedSearch] = useDebounce(search, 300);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-
-  const { data: notesData } = useNotes({ page, search: debouncedSearch });
+  const {
+    data: notesData,
+    isLoading,
+    isError,
+  } = useNotes({ page, search: debouncedSearch });
   const totalPages = notesData?.totalPages || 1;
-
-  const handleNoteClick = (note: Note) => {
-    setSelectedNote(note);
-    setIsModalOpen(true);
-  };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    setSelectedNote(null);
   };
 
   const handleOpenCreateModal = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setSelectedNote(null);
     setIsModalOpen(true);
   };
 
@@ -51,31 +45,29 @@ export default function App() {
             }}
           />
 
-          <Pagination
-            page={page}
-            onPageChange={setPage}
-            search={debouncedSearch}
-            totalPages={totalPages}
-          />
+          {totalPages > 1 && (
+            <Pagination
+              page={page}
+              onPageChange={setPage}
+              totalPages={totalPages}
+            />
+          )}
 
           <button className={css.button} onClick={handleOpenCreateModal}>
             Create note +
           </button>
         </header>
 
-        <NoteList
-          page={page}
-          search={debouncedSearch} 
-          onNoteClick={handleNoteClick} 
-        />
+        {isLoading && <Loader />}
+        {isError && <ErrorMessage />}
 
-        
-        {isModalOpen && (
-          <NoteModal
-            onClose={handleModalClose}
-            note={selectedNote} 
-          />
+        {!isLoading && !isError && notesData?.notes.length === 0 && <Loader />}
+
+        {!isLoading && !isError && notesData && notesData.notes.length > 0 && (
+          <NoteList notes={notesData.notes} />
         )}
+
+        {isModalOpen && <NoteModal onClose={handleModalClose} />}
 
         <Toaster position="top-right" />
       </div>

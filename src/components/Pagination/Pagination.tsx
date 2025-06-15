@@ -3,7 +3,6 @@ import css from './Pagination.module.css';
 
 interface PaginationProps {
   page: number;
-  search: string;
   onPageChange: (selected: number) => void;
   totalPages: number;
 }

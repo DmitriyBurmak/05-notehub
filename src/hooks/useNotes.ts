@@ -7,14 +7,15 @@ export const queryClient = new QueryClient();
 interface UseNotesParams {
   page: number;
   search: string;
+  perPage?: number;
 }
 
-export const useNotes = ({ page, search }: UseNotesParams) => {
+export const useNotes = ({ page, search, perPage }: UseNotesParams) => {
   const queryClientInstance = useQueryClient();
 
   return useQuery<NotesResponse>({
-    queryKey: ['notes', page, search],
-    queryFn: () => fetchNotes(page, search),
+    queryKey: ['notes', page, search, perPage],
+    queryFn: () => fetchNotes(page, search, perPage),
     staleTime: 1000 * 60,
     retry: 1,
     placeholderData: previousData => {
@@ -24,6 +25,7 @@ export const useNotes = ({ page, search }: UseNotesParams) => {
           'notes',
           page - 1,
           search,
+          perPage,
         ]);
       }
       return undefined;

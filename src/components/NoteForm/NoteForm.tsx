@@ -19,7 +19,6 @@ interface NoteFormProps {
 }
 
 const tags: NoteTag[] = ['Todo', 'Work', 'Personal', 'Meeting', 'Shopping'];
-
 const validationSchema = Yup.object({
   title: Yup.string()
     .min(3, 'Title must be at least 3 characters')
@@ -35,7 +34,6 @@ export default function NoteForm({
   onClose,
 }: NoteFormProps) {
   const queryClient = useQueryClient();
-
   const { mutate: createMutation, isPending } = useMutation({
     mutationFn: (values: CreateNotePayload) => createNote(values),
     onSuccess: () => {
@@ -47,7 +45,6 @@ export default function NoteForm({
       toast.error(`Error creating a note: ${error.message}`);
     },
   });
-
   const handleSubmit = (values: FormValues) => {
     const payload: CreateNotePayload = {
       title: values.title,
@@ -71,7 +68,6 @@ export default function NoteForm({
             <Field id="title" name="title" type="text" className={css.input} />
             <ErrorMessage name="title" component="span" className={css.error} />
           </div>
-
           <div className={css.formGroup}>
             <label htmlFor="content">Content</label>
             <Field
@@ -87,7 +83,6 @@ export default function NoteForm({
               className={css.error}
             />
           </div>
-
           <div className={css.formGroup}>
             <label htmlFor="tag">Tag</label>
             <Field id="tag" name="tag" as="select" className={css.select}>
@@ -99,7 +94,6 @@ export default function NoteForm({
             </Field>
             <ErrorMessage name="tag" component="span" className={css.error} />
           </div>
-
           <div className={css.actions}>
             <button
               type="button"

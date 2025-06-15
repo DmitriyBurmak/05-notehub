@@ -11,7 +11,6 @@ interface NoteListProps {
 
 export default function NoteList({ notes }: NoteListProps) {
   const queryClient = useQueryClient();
-
   const { mutate: deleteMutation, isPending: isDeleting } = useMutation({
     mutationFn: (id: number) => deleteNote(id),
     onSuccess: deletedNote => {

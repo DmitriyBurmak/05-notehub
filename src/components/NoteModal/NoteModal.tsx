@@ -20,7 +20,6 @@ export default function NoteModal({ onClose }: NoteModalProps) {
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.currentTarget === e.target) onClose();
   };
-
   const initialFormValues = {
     title: '',
     content: '',

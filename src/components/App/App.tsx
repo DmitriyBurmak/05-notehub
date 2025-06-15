@@ -15,19 +15,17 @@ export default function App() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounce(search, 300);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const notesPerPage = 12;
   const {
     data: notesData,
     isLoading,
     isError,
-  } = useNotes({ page, search: debouncedSearch });
+  } = useNotes({ page, search: debouncedSearch, perPage: notesPerPage });
   const totalPages = notesData?.totalPages || 1;
-
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
-
   const handleOpenCreateModal = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsModalOpen(true);
@@ -44,7 +42,6 @@ export default function App() {
               setPage(1);
             }}
           />
-
           {totalPages > 1 && (
             <Pagination
               page={page}
@@ -52,23 +49,17 @@ export default function App() {
               totalPages={totalPages}
             />
           )}
-
           <button className={css.button} onClick={handleOpenCreateModal}>
             Create note +
           </button>
         </header>
-
         {isLoading && <Loader />}
         {isError && <ErrorMessage />}
-
         {!isLoading && !isError && notesData?.notes.length === 0 && <Loader />}
-
         {!isLoading && !isError && notesData && notesData.notes.length > 0 && (
           <NoteList notes={notesData.notes} />
         )}
-
         {isModalOpen && <NoteModal onClose={handleModalClose} />}
-
         <Toaster position="top-right" />
       </div>
     </QueryClientProvider>

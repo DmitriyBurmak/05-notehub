@@ -9,7 +9,6 @@ interface PaginationProps {
 
 export default function Pagination({
   page,
-
   onPageChange,
   totalPages,
 }: PaginationProps) {
